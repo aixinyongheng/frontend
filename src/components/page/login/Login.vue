@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
     <div class="ms-login">
-      <div class="ms-title">测试界面</div>
+      <div class="ms-title" @dblclick="forceLogin()" >测试界面</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
         <el-form-item prop="username">
           <el-input v-model="ruleForm.username" placeholder="username">
@@ -21,7 +21,7 @@
         <template>
       </template>
         <div class="login-btn">
-          <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')" >登录</el-button>
         </div>
         <p class="login-tips"></p>
       </el-form>
@@ -74,9 +74,12 @@ export default {
             }
           });
      },
-     loginTest(){
-       
-     }
+    forceLogin(){
+      
+        localStorage.setItem("ms_username", "用户名");
+        localStorage.setItem("user", JSON.stringify({username:"111",admin:"1"}));
+        this.$router.push("/home/userinfo");
+    }
   }
 };
 </script>

@@ -195,7 +195,8 @@ export default {
         //this.addGeoJson("http://172.16.106.5:8083/tdt_xz/resources/shpJsonFile/hyd_1572578137027.json");//240Mgeojson不行
         //this.addGeoJson("http://172.16.106.5:8083/tdt_xz/resources/shpJsonFile/hyd_new_1572579759634.json");//17Mshp  
        // this.addGeoJson("http://172.16.106.5:8083/tdt_xz/resources/shpJsonFile/hyd_new2_1572584793269.json"); //71Mshp   119M geojson
-        this.addGeoJson("http://172.16.104.140:8079/tdt-xz/resources/shpJsonFile/%E5%BB%BA%E7%AD%91%E7%89%A9_1594975140587.json");
+       // this.addGeoJson("http://172.16.104.140:8079/tdt-xz/resources/shpJsonFile/%E5%BB%BA%E7%AD%91%E7%89%A9_1594975140587.json");
+        this.addGeoJson("http://localhost:8082/tdt_xz/resources/shpJsonFile/BUIA.json");
     },
     //加载wmts服务
     addWMTSClick(){
@@ -964,16 +965,21 @@ export default {
         // 天地图（各个区域的token可以在网上查到）
         var vecUrl = "http://t0.tianditu.com/vec_w/wmts?tk="+window.tdtToken;
         var cvaUrl = "http://t0.tianditu.com/cva_w/wmts?tk="+window.tdtToken;     //注记
+      
         //vecUrl=`http://t0.tianditu.com/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=${window.tdtToken}`;
         //使用严格模式
         // "use strict";
         //实例化source对象
-        var tdtVec = {
+//         vecUrl=`
+// http://xizang.tianditu.gov.cn:81/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILECOL={x}&TILEROW={y}&TILEMATRIX={z}&tk=00a9eefd8372800ea54252be21308ee3
+// `    ;
+    var tdtVec = {
             //类型为栅格瓦片
             "type": "raster",
             'tiles': [
                 //请求地址
-                vecUrl + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles" 
+                vecUrl 
+                 + "&SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=vec&STYLE=default&TILEMATRIXSET=w&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=tiles" 
             ],
             // 'tiles': [
             //     //请求地址

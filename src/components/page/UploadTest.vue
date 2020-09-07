@@ -132,7 +132,7 @@
         </el-row>
         <hr style />
       </el-tab-pane>
-      <el-tab-pane label="大文件上传测试" name="second">
+      <el-tab-pane label="大文件切片上传测试" name="second">
         上传路径：
         <el-input v-model="bigFileUploadURL" placeholder="请输入内容"></el-input>
         备注：服务返回值 {total: 63, name: "20190826部署.zip", index: 60, end: false, state: true} end为是否切片
@@ -147,41 +147,83 @@
           @fileDelOper="fileDelOper"
         ></FileUpload>
       </el-tab-pane>
-      <el-tab-pane label="普通文件上传测试" name="third">
-        <el-input v-model="uploadAction2" ></el-input>
+
+
+
+        <el-tab-pane label="文件上传测试" name="fourth">
+                <el-input v-model="uploadAction2" ></el-input>
+                      <el-upload
+                            class="upload-demo"
+                            :action="uploadAction2"
+                            :on-remove="handleRemove"
+                            :before-remove="beforeRemove"
+                            :auto-upload="true"
+                            :limit="1"
+                            :on-exceed="handleExceed"
+                            :on-success="submitSuccess2"
+                          >
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                          </el-upload>
+       </el-tab-pane>
+
+
+
+
+
+
+      <el-tab-pane label="全国灾害模板上传测试" name="third">
+        <table>
+          <tr>
+              <el-select v-model="flbm" placeholder="请选择">
+                  <el-option
+                    v-for="item in flbmarr"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+            <!-- <el-cascader
+              v-model="flbm"
+              :options="flbmarr"
+            ></el-cascader> -->
+            <td> 分类表名:<el-input v-model="flbm" placeholder="请输入分类表名"></el-input></td>
+            <td>  ip:<el-input v-model="uploadAction2Ip" ></el-input></td>
+             <td>    用户id:<el-input v-model="userid" ></el-input></td>
+            <td>   level:<el-input v-model="level" ></el-input></td>
+             <td> accesstoken: <el-input v-model="accesstoken" ></el-input></td>
+           </tr>
+           </table>
+              <hr style="margin-top:20px;margin-bottom:20px; ">
+            地址：
+            <el-input v-model="uploadAction2" ></el-input>
               <el-upload
                     class="upload-demo"
                     :action="uploadAction2"
                     :on-remove="handleRemove"
                     :before-remove="beforeRemove"
                     :auto-upload="true"
-                    :limit="1"
+                    :limit="50"
                     :on-exceed="handleExceed"
                     :on-success="submitSuccess2"
                     :data="{uploadtype:'1'}"
                   >
-                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                   <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                    </el-upload>
-
-                  
+                   确认导入地址:http://{{this.uploadAction2Ip}}:9006/qgzhdc/import/api/v1/importData/confirmImportPc
+                   <el-button @click="confirmImprot" >确认导入</el-button>
+                   <br>
+                   导出错误服务地址：
+                   http://{{this.uploadAction2Ip}}:9006/qgzhdc/import/api/v1/exportErrorDataPc/{{this.userid}}?tablename={{this.flbm}}
+                  <el-button @click="exportError" >导出错误数据</el-button>
+                  <div style="background:yellow"> {{uploadResponse}}</div>
       </el-tab-pane>
-     <el-tab-pane label="制作缩略图" name="fourth">
-        <el-input v-model="uploadAction2" ></el-input>
-              <el-upload
-                    class="upload-demo"
-                    :action="uploadAction2"
-                    :on-remove="handleRemove"
-                    :before-remove="beforeRemove"
-                    :auto-upload="true"
-                    :limit="1"
-                    :on-exceed="handleExceed"
-                    :on-success="submitSuccess2"
-                  >
-                    <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                   </el-upload>
 
-                  
-      </el-tab-pane>
+
+
+
+
+
+     
     </el-tabs>
   </div>
 </template>
@@ -213,7 +255,7 @@ export default {
         isPublic: true,
         publictype: "1",
         details: "详情",
-        atlastype: "71"
+        atlastype: "71",
       },
       defaultImgURL:
         'this.src="' + require("../../../static/img/nouse.png") + '"',
@@ -232,7 +274,14 @@ export default {
       bigFileUploadURL: window.processServiceURL + "file/uploadBigFiles",
       histFileArr: [],
       // uploadAction2:"http://localhost:8085/file/uploadThematic"
-      uploadAction2:"http://localhost:9006/qgzhdc/import/api/v1/importCommonPcNew/993/zrzhczt_ggfwss_xx"
+      flbm:"zrzhczt_ggfwss_xx",
+      uploadAction2Ip:"172.16.106.5",
+      userid:3287,
+      accesstoken:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTk1NjMxNjAsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJxY3Blcm1pc3Npb25zIjoxLCJwY3Blcm1pc3Npb25zIjoxLCJrZXkiOiJGMUQ5M0JGNTIwQkE2RUVFQ0M3QzZEREM0NkYyQUVCNiIsImlhdCI6MTU5OTQ3Njc2MH0.SJTJCtrNkCTDQ6VCbm0DxkaE4WGVxG9UmdMO1gTJB-c",
+      level:4,
+      uploadAction2:"http://172.16.106.5:9006/qgzhdc/import/api/v1/importDataPc/3287/2?tablename=zrzhczt_ggfwss_xx&lev=4&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTk1NjMxNjAsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJxY3Blcm1pc3Npb25zIjoxLCJwY3Blcm1pc3Npb25zIjoxLCJrZXkiOiJGMUQ5M0JGNTIwQkE2RUVFQ0M3QzZEREM0NkYyQUVCNiIsImlhdCI6MTU5OTQ3Njc2MH0.SJTJCtrNkCTDQ6VCbm0DxkaE4WGVxG9UmdMO1gTJB-c",
+      uploadResponse:"",
+      flbmarr:[]
     };
   },
   mounted() {
@@ -266,7 +315,6 @@ export default {
   methods: {
     handleChange() {},
     addBaseMap() {
-    
       this.$router.push({ path: "/firstmap", query: { id: "001" } });
     },
     TDTMap() {
@@ -294,8 +342,10 @@ export default {
       this.responsedata = response.data;
     },
     submitSuccess2(response){
-      console.log("test:",response);
-      window.href.location=response.data;
+
+      //console.log("test:",response);
+      //window.href.location=response.data;
+      this.uploadResponse=response
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除`);
@@ -327,14 +377,49 @@ export default {
     },
     fileDelOper() {
       this.histFileArr = val;
+    },
+    confirmImprot(){
+      this.$axios.post(`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importData/confirmImportPc?token=${this.accesstoken}`,{"cjrid":this.userid,"tablename":this.flbm,"csshjbpc":"4","cjrmc":"房山区应急管理局"}).then(res=>{
+        this.uploadResponse=JSON.stringify(res)
+      }).catch(err=>{
+        this.$message.error("服务出错");
+      });
+    },
+    exportError(){
+     window.location.href=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/exportErrorDataPc/${this.userid}?tablename=${this.flbm}`;
     }
   },
   mounted(){
-        this.$axios.get("http://localhost:8085/resources/imagebrowser/aaa.json").then(response=>{
-                debugger;
-                console.log(response);
-            });
-        }
+        // this.$axios.get("http://localhost:8085/resources/imagebrowser/aaa.json").then(response=>{
+        //         debugger;
+        //         console.log(response);
+        //     });
+        this.flbmarr=[{"label":"学校","value":"zrzhczt_ggfwss_xx","id":"706aff2c-f008-11ea-b920-000c2927948f"},{"label":"医疗卫生机构","value":"zrzhczt_ggfwss_ylwsjg","id":"706b035a-f008-11ea-b920-000c2927948f"},{"label":"提供住宿的社会服务机构","value":"zrzhczt_ggfwss_tgzsdshfwjg","id":"706b067a-f008-11ea-b920-000c2927948f"},{"label":"公共文化场所","value":"zrzhczt_ggfwss_ggwhcs","id":"706b0878-f008-11ea-b920-000c2927948f"},{"label":"旅游景区","value":"zrzhczt_ggfwss_lyjq","id":"706b0a4e-f008-11ea-b920-000c2927948f"},{"label":"星级饭店","value":"zrzhczt_ggfwss_xjfd","id":"706b0bb6-f008-11ea-b920-000c2927948f"},{"label":"体育场馆","value":"zrzhczt_ggfwss_tycg","id":"706b0d14-f008-11ea-b920-000c2927948f"},{"label":"宗教活动场所","value":"zrzhczt_ggfwss_zjhdcs","id":"706b0e68-f008-11ea-b920-000c2927948f"},{"label":"大型超市、百货店和亿元以上商品交易市场","value":"zrzhczt_ggfwss_spjysc","id":"706b0fc6-f008-11ea-b920-000c2927948f"},{"label":"基础指标统计表","value":"zrzhczt_ggfwss_jczbtjb","id":"706b1124-f008-11ea-b920-000c2927948f"},{"label":"政府灾害管理能力","value":"zhjzzy_zfzhjzzy_zfzhglnl","id":"706b1282-f008-11ea-b920-000c2927948f"},{"label":"综合性、政府专职和企业专职消防救援队伍与装备","value":"zhjzzy_zfzhjzzy_zhxzfzzhqyzzxfjydwyzb","id":"706b1412-f008-11ea-b920-000c2927948f"},{"label":"森林消防队伍与装备","value":"zhjzzy_zfzhjzzy_slxfdwyzb","id":"706b15ac-f008-11ea-b920-000c2927948f"},{"label":"航空护林站队伍与装备","value":"zhjzzy_zfzhjzzy_hkhlzdwyzb","id":"706b1714-f008-11ea-b920-000c2927948f"},{"label":"地震专业救援队伍与装备","value":"zhjzzy_zfzhjzzy_dzzyjydwyzb","id":"706b1872-f008-11ea-b920-000c2927948f"},{"label":"矿山/隧道行业救援队伍与装备","value":"zhjzzy_zfzhjzzy_kssdhyjydwyzb","id":"706b19d0-f008-11ea-b920-000c2927948f"},{"label":"危化/油气行业救援队伍与装备","value":"zhjzzy_zfzhjzzy_whyqhyjydwyzb","id":"706b1b2e-f008-11ea-b920-000c2927948f"},{"label":"海事救援队伍与装备","value":"zhjzzy_zfzhjzzy_hsjydwyzb","id":"706b1c82-f008-11ea-b920-000c2927948f"},{"label":"救灾物资储备库（点）","value":"zhjzzy_zfzhjzzy_jzwzcbkd","id":"706b1de0-f008-11ea-b920-000c2927948f"},{"label":"应急避难场所","value":"zhjzzy_zfzhjzzy_yjbncs","id":"706b1f48-f008-11ea-b920-000c2927948f"},{"label":"渔船避风港","value":"zhjzzy_zfzhjzzy_ycbfg","id":"706b211e-f008-11ea-b920-000c2927948f"},{"label":"救援装备资源企业","value":"zhjzzy_qyyshlljzzy_jyzbzy","id":"706b231c-f008-11ea-b920-000c2927948f"},{"label":"保险和再保险企业综合减灾资源（能力）","value":"zhjzzy_qyyshlljzzy_bxhzbxqyzhjzzynl","id":"706b2506-f008-11ea-b920-000c2927948f"},{"label":"社会应急力量综合减灾资源","value":"zhjzzy_qyyshlljzzy_shyjllzhjzzy","id":"706b26f0-f008-11ea-b920-000c2927948f"},{"label":"乡镇（街道）综合减灾资源（能力）","value":"zhjzzy_jczhjzzy_xzjdzhjzzynl","id":"706b2858-f008-11ea-b920-000c2927948f"},{"label":"社区（行政村）综合减灾资源（能力）","value":"zhjzzy_jczhjzzy_sqxzczhjzzynl","id":"706b29b6-f008-11ea-b920-000c2927948f"},{"label":"家庭减灾资源（能力）数据采集规范","value":"zhjzzy_jtjzzy_jtjzzynlsjcjgf","id":"706b2b14-f008-11ea-b920-000c2927948f"},{"label":"化工园区","value":"zdyh_zrzhcsaqscsgyhss_hgyq","id":"706b2d62-f008-11ea-b920-000c2927948f"},{"label":"危险化学品企业","value":"zdyh_zrzhcsaqscsgyhss_wxhxpqy","id":"706b2f4c-f008-11ea-b920-000c2927948f"},{"label":"地下矿山","value":"zdyh_zrzhcsfmkssgwxy_dxks","id":"706b312c-f008-11ea-b920-000c2927948f"},{"label":"排土场（废石场）","value":"zdyh_zrzhcsfmkssgwxy_ltks","id":"706b3316-f008-11ea-b920-000c2927948f"},{"label":"尾矿库","value":"zdyh_zrzhcsfmkssgwxy_wkk","id":"706b3500-f008-11ea-b920-000c2927948f"},{"label":"煤矿","value":"zdyh_zrzhcsmksgwxy_mk","id":"706b36e0-f008-11ea-b920-000c2927948f"},{"label":"年度自然灾害","value":"lszh_lszh_ndzrzh","id":"706b387a-f008-11ea-b920-000c2927948f"},{"label":"历史重大灾害事件","value":"lszh_lszh_lszdzhsj","id":"706b39e2-f008-11ea-b920-000c2927948f"},{"label":"历史一般自然灾害事件","value":"lszh_lszh_lsybzrzhsj","id":"706b3b86-f008-11ea-b920-000c2927948f"}];
+   
+          
+        
+      
+    },
+  watch:{
+    flbm(newval, oldval2) {
+      console.log(newval,oldval2);
+         console.log(this.flbm);
+      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${this.userid}/2?tablename=${newval}&lev=${this.level}&token=${this.accesstoken}`
+    },
+    uploadAction2Ip(newval, oldval2){
+      this.uploadAction2=`http://${newval}:9006/qgzhdc/import/api/v1/importDataPc/${this.userid}/2?tablename=${this.flbm}&lev=${this.level}&token=${this.accesstoken}`
+    },
+    userid(newval,oldval2){
+      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${newval}/2?tablename=${this.flbm}&lev=${this.level}&token=${this.accesstoken}`
+    },
+    level(newval,oldval){
+      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${newval}/2?tablename=${this.flbm}&lev=${newval}&token=${this.accesstoken}`
+    },
+    accesstoken(newval,oldval){
+      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${newval}/2?tablename=${this.flbm}&lev=${newval}&token=${newval}`
+
+    }
+  }
 };
 </script>
 

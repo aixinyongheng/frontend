@@ -73,10 +73,10 @@
           <el-button size="mini" @click="addGoeJsonClick">加载geojson</el-button>
         level:{{mapzoom}}
        <el-input
-  type="textarea"
-  :autosize="{ minRows: 2, maxRows: 40}"
-  placeholder="请输入内容"
-  v-model="textarea">
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 40}"
+          placeholder="请输入内容"
+          v-model="textarea">
 </el-input>
 
         <!-- <div class="block">
@@ -196,7 +196,10 @@ export default {
         //this.addGeoJson("http://172.16.106.5:8083/tdt_xz/resources/shpJsonFile/hyd_new_1572579759634.json");//17Mshp  
        // this.addGeoJson("http://172.16.106.5:8083/tdt_xz/resources/shpJsonFile/hyd_new2_1572584793269.json"); //71Mshp   119M geojson
        // this.addGeoJson("http://172.16.104.140:8079/tdt-xz/resources/shpJsonFile/%E5%BB%BA%E7%AD%91%E7%89%A9_1594975140587.json");
-        this.addGeoJson("http://localhost:8082/tdt_xz/resources/shpJsonFile/BUIA.json");
+       // this.addGeoJson("http://localhost:8082/tdt_xz/resources/shpJsonFile/BUIA.json");
+         this.addGeoJson("http://localhost:8082/tdt_xz/resources/shpJsonFile/shp2json_1599541869344.json");
+       
+        // this.addGeoJson("http://172.16.104.140:8079/tdt-xz/resources/shpJsonFile/%E5%BB%BA%E7%AD%91%E7%89%A9_1599530937948.json")
     },
     //加载wmts服务
     addWMTSClick(){
@@ -249,11 +252,12 @@ export default {
       }
       this.map.addSource("national-park", {
           type: "vector",
-             tiles: ['https://qgzhdc.geo-compass.com/qgzhdc/dataManage/api/v1/queryListCommonMvt/{z}/{x}/{y}.mvt?code=0&tablename=&cjrid=3669&dwmc=&yhlx=0&sfdw=&shzt=&queryCode=&hczt=&gids=&querytype=2&pid=&tag=2'],
+            // tiles: ['https://qgzhdc.geo-compass.com/qgzhdc/dataManage/api/v1/queryListCommonMvt/{z}/{x}/{y}.mvt?code=0&tablename=&cjrid=3669&dwmc=&yhlx=0&sfdw=&shzt=&queryCode=&hczt=&gids=&querytype=2&pid=&tag=2'],
             //tiles: ['http://172.16.100.156:9005/qgzhdc/dataManage/api/v1/queryListCommonMvt/{z}/{x}/{y}.mvt?code=110111&cjrid=10507&yhlx=1&pid=10507&tag=2'],
             // tiles: ['http://172.16.100.156:9005/qgzhdc/dataManage/api/v1/queryListCommonMvt/{z}/{x}/{y}.mvt?code=0'],
             // tiles: ['http://172.16.106.5:9005/qgzhdc/dataManage/api/v1/queryListCommonMvt/{z}/{x}/{y}.mvt?code=0'],
             // tiles: ['http://172.16.106.5:9005/qgzhdc/dataManage/api/v1/queryListSjsbCommonMvt/{z}/{x}/{y}.mvt?code=0'],
+             tiles: ['http://172.16.106.5:7001/qgzhdc/dataManage/api/v1/queryListSjsbCommonMvt/{z}/{x}/{y}.mvt?code=0'],
       });
         this.map.addLayer({
                       id: "drawpointlayer",
@@ -370,69 +374,6 @@ export default {
               },
             }
           });
-
-      
-                      // 聚合效果
-                      //           this.map.addLayer({
-                      //             id: 'clusters',
-                      //             type: 'circle',
-                      //             source: 'national-park',
-                      //             "source-layer":"mvt",
-                      //             filter: ['has', 'point_count'],
-                      //             paint: {
-                      //             // Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-                      //             // with three steps to implement three types of circles:
-                      //             //   * Blue, 20px circles when point count is less than 100
-                      //             //   * Yellow, 30px circles when point count is between 100 and 750
-                      //             //   * Pink, 40px circles when point count is greater than or equal to 750
-                      //             'circle-color': [
-                      //             'step',
-                      //             ['get', 'point_count'],
-                      //             '#51bbd6',
-                      //             10,
-                      //             '#f1f075',
-                      //             100,
-                      //             '#f28cb1'
-                      //             ],
-                      //             'circle-radius': [
-                      //             'step',
-                      //             ['get', 'point_count'],
-                      //             20,
-                      //             100,
-                      //             30,
-                      //             750,
-                      //             40
-                      //             ]
-                      //             }
-                      //             });
-          
-                      // this.map.addLayer({
-                      //   id: 'cluster-count',
-                      //   type: 'symbol',
-                      //   source: 'national-park',
-                      //   "source-layer":"mvt",
-                      //   filter: ['has', 'point_count'],
-                      //   layout: {
-                      //   // 'text-field': '{id}',
-                      //   // 'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                      //   'text-size': 12
-                      //   }
-                      // });
-                      
-                      // this.map.addLayer({
-                      // id: 'unclustered-point',
-                      // type: 'circle',
-                      // source: 'national-park',
-                      // "source-layer":"mvt",
-                      // filter: ['!', ['has', 'point_count']],
-                      // paint: {
-                      // 'circle-color': '#ff0000',
-                      // 'circle-radius': 4,
-                      // 'circle-stroke-width': 1,
-                      // 'circle-stroke-color': '#fff'
-                      // }
-                      // });
-
                         var _this=this;
                         // inspect a cluster on click
                         this.map.on('click', 'clusters', function(e) {
@@ -725,28 +666,23 @@ export default {
         filter: ["has", "count"],
         layout: {
             "text-field": "{count}",
-            //  "text-font": ["Simsun (Founder Extended) Regular"],
-          //  "text-font": ["SimHeiRegular"],
-             
+            // "text-font": ["Simsun (Founder Extended) Regular"],
+            // "text-font": ["SimHeiRegular"],
             "text-size": 12
         }
     });
-      
-    
     },
     addclusters(){
-                 this.map.addSource('earthquakes', {
-                                    type: 'geojson',
-                                    // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-                                    // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-                                    data:
-                                    'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
-                                    cluster: false,
-                                    clusterMaxZoom: 14, // Max zoom to cluster points on
-                                    clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-                                  });
- 
-                      this.map.addLayer({
+           this.map.addSource('earthquakes', {
+                  type: 'geojson',
+                  // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
+                  // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
+                  data: 'https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson',
+                  cluster: false,
+                  clusterMaxZoom: 14, // Max zoom to cluster points on
+                  clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+                  });
+            this.map.addLayer({
                       id: 'clusters',
                       type: 'circle',
                       source: 'earthquakes',
@@ -801,13 +737,7 @@ export default {
                     'circle-stroke-width': 1,
                     'circle-stroke-color': '#fff'
                     }
-                    });
- 
-               
- 
-
-    
-   
+             });
     },
     toggleLayer() {
       console.log(this.map.getSource("national-park"));

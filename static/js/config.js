@@ -13,8 +13,7 @@ window.tdtToken="80a23aed6ba5c4ad7d1f0647a619f294";
     window.uplaodUrl="http://172.16.106.5:8070/qxgl/file/uploadFiles";
     window.downloadUrl="http://172.16.106.5:8070/";
     var uploadthematicUrl = window.processServiceURL+"/file/uploadThematic"
-  } else 
-  if (window.location.host.indexOf('localhost1') != -1) {
+  } else if (window.location.host.indexOf('localhost1') != -1) {
     window.processServiceURL = "http://localhost:8070/";
     var websocketUrl = "localhost:8070/";
     var baseService = processServiceURL+'HproseServer'//java服务地址

@@ -6,7 +6,6 @@ const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
-
 // Router.beforeEach((to, from, next) => {
 //     if (to.meta.title) {//如果设置标题，拦截后设置标题
 //       document.title = to.meta.title

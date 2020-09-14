@@ -1,13 +1,5 @@
 <template>
   <div class="sidebar">
-    <!-- <el-menu
-      class="sidebar-el-menu"
-      :default-active="$route.path"
-      :collapse="collapse"
-      text-color="#4083e7"
-      active-text-color="#ffffff"
-      router
-    > -->
      <el-menu
       class="sidebar-el-menu"
       :default-active="$route.path"
@@ -20,18 +12,21 @@
           <el-submenu :index="item.index" :key="item.index">
             <template slot="title">
               <i :class="item.icon"></i>
-              <span slot="title">{{ item.title }}</span>
+               {{ item.title  }}
             </template>
             <template v-for="subItem in item.subs">
               <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
-                <template slot="title">{{ subItem.title }}</template>
+                <template slot="title">   <i :class="subItem.icon"></i>{{ subItem.title }}</template>
                 <el-menu-item
                   v-for="(threeItem,i) in subItem.subs"
                   :key="i"
                   :index="threeItem.index"
-                >{{ threeItem.title }}</el-menu-item>
+                >   <i :class="threeItem.icon"></i>{{ threeItem.title }}11</el-menu-item>
               </el-submenu>
-              <el-menu-item v-else :index="subItem.index" :key="subItem.index">{{ subItem.title }}</el-menu-item>
+              <el-menu-item v-else :index="subItem.index" :key="subItem.index">
+                 <i :class="subItem.icon"></i>
+                {{ subItem.title }}
+                </el-menu-item>
             </template>
           </el-submenu>
         </template>
@@ -81,18 +76,18 @@ export default {
         //   title: "通知公告"
         // },
         {
-          icon: "el-icon-lx-cascades",
+          icon: "iconfont icon-daochuwendang",
           index: "none",
           title: "工作流Activiti测试",
           subs: [
              {
-          icon: "el-icon-lx-cascades",
-          index: "none1",
-          title: "部署管理",subs:[
-            { index: "/home/processDeploy", title: "部署信息表" },
-            { index: "/home/process", title: "流程定义表" }]},
-            { index: "/home/processInstance", title: "流程实例表" },
-            { index: "/home/userTask", title: "用户任务模拟" }
+            icon: "iconfont icon-daochuwendang",
+            index: "none1",
+            title: "部署管理",subs:[
+            { index: "/home/processDeploy", title: "部署信息表",icon: "iconfont icon-daochuwendang", },
+            { index: "/home/process", title: "流程定义表",icon: "iconfont icon-daochuwendang", }]},
+            { index: "/home/processInstance", title: "流程实例表",icon: "iconfont icon-daochuwendang", },
+            { index: "/home/userTask", title: "用户任务模拟",icon: "iconfont icon-fuwuceshi", }
           ]
         },
          {
@@ -101,7 +96,7 @@ export default {
           title: "导出数据库详"
         },
          {
-          icon: "el-icon-upload",
+          icon: "iconfont icon-fuwuceshi",
           index: "/home/uploadTest",
           title: "上传测试界面"
         },
@@ -122,7 +117,7 @@ export default {
         }
         ,
          {
-          icon: "el-icon-lx-cascades",
+          icon: "iconfont icon-fuwuceshi",
           index: "activemq",
           title: "ActiveMq测试"
         },

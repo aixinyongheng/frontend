@@ -215,7 +215,11 @@
                    导出错误服务地址：
                    http://{{this.uploadAction2Ip}}:9006/qgzhdc/import/api/v1/exportErrorDataPc/{{this.userid}}?tablename={{this.flbm}}
                   <el-button @click="exportError" >导出错误数据</el-button>
-                  <div style="background:yellow"> {{uploadResponse}}</div>
+                  <div style="background:yellow" > {{uploadResponse}}</div>
+                  <div>
+                    <el-button @click="clickNew">cehsi </el-button>
+                    
+                    <a href="http://172.16.100.156:9305/qgzhdc/dataManage/api/v1/batchTool?op=1&code=0&yhlx=0&queryCode=0&tag=2">测试导出</a></div>
       </el-tab-pane>
 
 
@@ -277,9 +281,9 @@ export default {
       flbm:"zrzhczt_ggfwss_xx",
       uploadAction2Ip:"172.16.106.5",
       userid:3287,
-      accesstoken:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTk1NjMxNjAsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJxY3Blcm1pc3Npb25zIjoxLCJwY3Blcm1pc3Npb25zIjoxLCJrZXkiOiJGMUQ5M0JGNTIwQkE2RUVFQ0M3QzZEREM0NkYyQUVCNiIsImlhdCI6MTU5OTQ3Njc2MH0.SJTJCtrNkCTDQ6VCbm0DxkaE4WGVxG9UmdMO1gTJB-c",
+      accesstoken:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAyMzkwNjIsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJ5aGx4IjoiMCIsImtleSI6IkYxRDkzQkY1MjBCQTZFRUVDQzdDNkREQzQ2RjJBRUI2IiwiaWF0IjoxNjAwMTUyNjYyfQ.PxeiL-ooMePcRmTNFxPD8odSN5UpRlweyVI-9cjo9y4",
       level:4,
-      uploadAction2:"http://172.16.106.5:9006/qgzhdc/import/api/v1/importDataPc/3287/2?tablename=zrzhczt_ggfwss_xx&lev=4&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTk1NjMxNjAsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJxY3Blcm1pc3Npb25zIjoxLCJwY3Blcm1pc3Npb25zIjoxLCJrZXkiOiJGMUQ5M0JGNTIwQkE2RUVFQ0M3QzZEREM0NkYyQUVCNiIsImlhdCI6MTU5OTQ3Njc2MH0.SJTJCtrNkCTDQ6VCbm0DxkaE4WGVxG9UmdMO1gTJB-c",
+      uploadAction2:"http://172.16.106.5:9006/qgzhdc/import/api/v1/importDataPc/3287/2?tablename=zrzhczt_ggfwss_xx&lev=4&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAyMzkwNjIsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJ5aGx4IjoiMCIsImtleSI6IkYxRDkzQkY1MjBCQTZFRUVDQzdDNkREQzQ2RjJBRUI2IiwiaWF0IjoxNjAwMTUyNjYyfQ.PxeiL-ooMePcRmTNFxPD8odSN5UpRlweyVI-9cjo9y4",
       uploadResponse:"",
       flbmarr:[]
     };
@@ -313,6 +317,37 @@ export default {
     }
   },
   methods: {
+    clickNew(){
+       const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        setTimeout(() => {
+         
+        }, 2000);
+    this.$axios({
+     method: "get", //请求方式
+     responseType: "blob", //告诉服务器我们需要的响应格式
+     url: "http://172.16.100.156:9305/qgzhdc/dataManage/api/v1/batchTool?op=1&code=0&yhlx=0&queryCode=0&tag=2", //地址
+    //  data: {
+    //    fileId: item.fileId,
+    //    authorId: window.localStorage.getItem("authorId")
+    //  }
+   }).then(res => {
+      loading.close();
+     let url = window.URL.createObjectURL(new Blob([res.data])); //转换为可用URl地址
+     let link = document.createElement("a"); //创建a标签
+     link.style.display = "none"; //使之不可见
+     link.href = url; //赋URL地址
+     link.setAttribute("download", "aaa.zip"); //设置下载属性、以及文件名
+     document.body.appendChild(link); //将a标签插至页面中
+     link.click(); //强制触发a标签事件
+   }).catch(err=>{
+      loading.close();
+   });
+    },
     handleChange() {},
     addBaseMap() {
       this.$router.push({ path: "/firstmap", query: { id: "001" } });
@@ -413,10 +448,10 @@ export default {
       this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${newval}/2?tablename=${this.flbm}&lev=${this.level}&token=${this.accesstoken}`
     },
     level(newval,oldval){
-      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${newval}/2?tablename=${this.flbm}&lev=${newval}&token=${this.accesstoken}`
+      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${this.userid}/2?tablename=${this.flbm}&lev=${newval}&token=${this.accesstoken}`
     },
     accesstoken(newval,oldval){
-      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${newval}/2?tablename=${this.flbm}&lev=${newval}&token=${newval}`
+      this.uploadAction2=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/importDataPc/${this.userid}/2?tablename=${this.flbm}&lev=${newval}&token=${newval}`
 
     }
   }

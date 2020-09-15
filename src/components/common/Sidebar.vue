@@ -12,21 +12,26 @@
           <el-submenu :index="item.index" :key="item.index">
             <template slot="title">
               <i :class="item.icon"></i>
-               {{ item.title  }}
+              <span slot="title">   {{ item.title  }}</span>
             </template>
             <template v-for="subItem in item.subs">
               <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
-                <template slot="title">   <i :class="subItem.icon"></i>{{ subItem.title }}</template>
+                <template slot="title">   
+                  <i :class="subItem.icon"></i>
+                 <span slot="title">  {{ subItem.title }}</span>
+                 </template>
                 <el-menu-item
                   v-for="(threeItem,i) in subItem.subs"
                   :key="i"
-                  :index="threeItem.index"
-                >   <i :class="threeItem.icon"></i>{{ threeItem.title }}11</el-menu-item>
+                  :index="threeItem.index"> 
+                  <i :class="threeItem.icon"></i>
+                  <span slot="title"> {{ threeItem.title }}</span>
+                  </el-menu-item>
               </el-submenu>
               <el-menu-item v-else :index="subItem.index" :key="subItem.index">
                  <i :class="subItem.icon"></i>
-                {{ subItem.title }}
-                </el-menu-item>
+               <span slot="title"> {{ subItem.title }}</span>
+              </el-menu-item>
             </template>
           </el-submenu>
         </template>

@@ -303,6 +303,7 @@ export default {
   text-align: center;
 }
 .table {
+  width:100%;
   font-size: 14px;
 }
 .red {

@@ -7,7 +7,9 @@
                       <div class='sliderMenu' >功能菜单</div>
                     <v-sidebar></v-sidebar>
                 </el-aside>
-                <el-main>  <router-view></router-view></el-main>
+                <el-main style="position:relative">  
+                    <router-view ></router-view>
+                </el-main>
             </el-container>
         </el-container>
         <!-- <div class="content-box" :class="{'content-collapse':collapse}"> -->

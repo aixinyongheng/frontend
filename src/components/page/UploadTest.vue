@@ -148,10 +148,11 @@
         ></FileUpload>
       </el-tab-pane>
 
-
-
         <el-tab-pane label="文件上传测试" name="fourth">
-                <el-input v-model="uploadAction2" ></el-input>
+          上传地址配置：
+          <el-input v-model="uploadAction2" > <i slot="suffix" title="保存路径" style="color:red" @click="saveuploadpz" class="el-input__icon el-icon-collection-tag"></i></el-input>
+              <div class="upload_single">
+                <el-tag type="success"> 单文件</el-tag> <el-tag> 自动上传</el-tag>
                       <el-upload
                             class="upload-demo"
                             :action="uploadAction2"
@@ -164,6 +165,35 @@
                           >
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                           </el-upload>
+                </div>
+                <div class="upload_multi">
+                  <el-tag type="success">多文件</el-tag> <el-tag >手动上传</el-tag>
+                        <el-upload
+                          class="upload-demo"
+                          ref="uploadmulti"
+                          :multiple=true
+                          :action="uploadAction2"
+                          :http-request="uploadMultiFile"
+                          :auto-upload="false"
+                          >
+                          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                          <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploadMulti">上传到服务器</el-button>
+                          <div slot="tip" class="el-upload__tip">上传文件不超过500kb</div>
+                        </el-upload>
+                      <!-- <el-upload
+                            class="upload-demo"
+                            :action="uploadAction2"
+                            :on-remove="handleRemove"
+                            :before-remove="beforeRemove"
+                            :auto-upload="false"
+                            :limit="1"
+                            :on-exceed="handleExceed"
+                            :on-success="submitSuccess2"
+                          >
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                          </el-upload> -->
+                
+                </div>
        </el-tab-pane>
 
 
@@ -219,7 +249,8 @@
                   <div>
                     <el-button @click="clickNew">cehsi </el-button>
                     
-                    <a href="http://172.16.100.156:9305/qgzhdc/dataManage/api/v1/batchTool?op=1&code=0&yhlx=0&queryCode=0&tag=2">测试导出</a></div>
+                    <a href="http://172.16.106.5:9006/qgzhdc/import/api/v1/downloadFile?filepath=zdyh_zrzhcsaqscsgyhss_hgyq_pc\3737\100万数据(分省)-110111-1600245811727.rar&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAzMDg0OTcsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJ5aGx4IjoiMCIsImtleSI6IkYxRDkzQkY1MjBCQTZFRUVDQzdDNkREQzQ2RjJBRUI2IiwiaWF0IjoxNjAwMjIyMDk3fQ.3t0UrJQMXze5zMVow9KWev17_zzTqkHRB1OzUrDRlBw"
+    >测试导出</a></div>
       </el-tab-pane>
 
 
@@ -285,7 +316,8 @@ export default {
       level:4,
       uploadAction2:"http://172.16.106.5:9006/qgzhdc/import/api/v1/importDataPc/3287/2?tablename=zrzhczt_ggfwss_xx&lev=4&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAyMzkwNjIsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJ5aGx4IjoiMCIsImtleSI6IkYxRDkzQkY1MjBCQTZFRUVDQzdDNkREQzQ2RjJBRUI2IiwiaWF0IjoxNjAwMTUyNjYyfQ.PxeiL-ooMePcRmTNFxPD8odSN5UpRlweyVI-9cjo9y4",
       uploadResponse:"",
-      flbmarr:[]
+      flbmarr:[],
+      formDate:null,
     };
   },
   mounted() {
@@ -318,35 +350,30 @@ export default {
   },
   methods: {
     clickNew(){
+       // 此下载方式只适合小文件下载！！！  下载占用内存，并且无进度   适用于下载后台处理时间长、文件小的文件。
        const loading = this.$loading({
           lock: true,
           text: 'Loading',
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         });
-        setTimeout(() => {
-         
-        }, 2000);
-    this.$axios({
-     method: "get", //请求方式
-     responseType: "blob", //告诉服务器我们需要的响应格式
-     url: "http://172.16.100.156:9305/qgzhdc/dataManage/api/v1/batchTool?op=1&code=0&yhlx=0&queryCode=0&tag=2", //地址
-    //  data: {
-    //    fileId: item.fileId,
-    //    authorId: window.localStorage.getItem("authorId")
-    //  }
-   }).then(res => {
-      loading.close();
-     let url = window.URL.createObjectURL(new Blob([res.data])); //转换为可用URl地址
-     let link = document.createElement("a"); //创建a标签
-     link.style.display = "none"; //使之不可见
-     link.href = url; //赋URL地址
-     link.setAttribute("download", "aaa.zip"); //设置下载属性、以及文件名
-     document.body.appendChild(link); //将a标签插至页面中
-     link.click(); //强制触发a标签事件
-   }).catch(err=>{
-      loading.close();
-   });
+          this.$axios({
+          method: "get", //请求方式
+          responseType: "blob", //告诉服务器我们需要的响应格式
+          url: "http://172.16.100.156:9305/qgzhdc/dataManage/api/v1/batchTool?op=1&code=0&yhlx=0&queryCode=0&tag=2", //地址
+          // url:`http://172.16.106.5:9006/qgzhdc/import/api/v1/downloadFile?filepath=zdyh_zrzhcsaqscsgyhss_hgyq_pc/3737/西藏自治区25万shp-110111-1600246267922.zip&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAzMDg0OTcsInVzZXJpZCI6MzI4NywidXNlcm5hbWUiOiLmiL_lsbHljLrlupTmgKXnrqHnkIblsYAiLCJkZXBhcnRtZW50aWQiOiIxMTAxMTEiLCJ5aGx4IjoiMCIsImtleSI6IkYxRDkzQkY1MjBCQTZFRUVDQzdDNkREQzQ2RjJBRUI2IiwiaWF0IjoxNjAwMjIyMDk3fQ.3t0UrJQMXze5zMVow9KWev17_zzTqkHRB1OzUrDRlBw`
+        }).then(res => {
+          loading.close();
+          let url = window.URL.createObjectURL(new Blob([res.data])); //转换为可用URl地址
+          let link = document.createElement("a"); //创建a标签
+          link.style.display = "none"; //使之不可见
+          link.href = url; //赋URL地址
+          link.setAttribute("download", "aaa.zip"); //设置下载属性、以及文件名
+          document.body.appendChild(link); //将a标签插至页面中
+          link.click(); //强制触发a标签事件
+        }).catch(err=>{
+            loading.close();
+        });
     },
     handleChange() {},
     addBaseMap() {
@@ -390,11 +417,28 @@ export default {
       this.param.updated_at = new Date();
       this.$refs.upload.submit();
     },
+    submitUploadMulti(){
+     
+       this.formDate = new FormData()
+       this.$refs.uploadmulti.submit(); //执行此步骤 相当于执行 http-request 的自定义实现方法
+       let config = {
+          headers: {
+             'Content-Type': 'multipart/form-data'
+          }
+         }    
+       this.$axios.post(this.uploadAction2, this.formDate,config).then( res => {
+            console.log(res)  
+       }).catch( res => {
+            console.log(res)
+       })
+    },
+    uploadMultiFile(file){
+         this.formDate.append('files'+Math.floor((Math.random()*100)+1), file.file);
+    },
     downloadTest() {
       window.open(this.downloadurl);
       // window.location.href =
     },
-
     //大文件上传
     successvalue(value) {
       let status = false;
@@ -422,6 +466,15 @@ export default {
     },
     exportError(){
      window.location.href=`http://${this.uploadAction2Ip}:9006/qgzhdc/import/api/v1/exportErrorDataPc/${this.userid}?tablename=${this.flbm}`;
+    },
+    saveuploadpz(){
+      let oldPz={};
+      if (window.localStorage.getItem('uploadPz')) {
+         oldPz = JSON.parse(window.localStorage.getItem('uploadPz'));
+      } 
+      oldPz.uploadAction2=this.uploadAction2;
+      window.localStorage.setItem("uploadPz",JSON.stringify(oldPz));
+      this.$message.success("保存成功");
     }
   },
   mounted(){
@@ -429,9 +482,13 @@ export default {
         //         debugger;
         //         console.log(response);
         //     });
+
         this.flbmarr=[{"label":"学校","value":"zrzhczt_ggfwss_xx","id":"706aff2c-f008-11ea-b920-000c2927948f"},{"label":"医疗卫生机构","value":"zrzhczt_ggfwss_ylwsjg","id":"706b035a-f008-11ea-b920-000c2927948f"},{"label":"提供住宿的社会服务机构","value":"zrzhczt_ggfwss_tgzsdshfwjg","id":"706b067a-f008-11ea-b920-000c2927948f"},{"label":"公共文化场所","value":"zrzhczt_ggfwss_ggwhcs","id":"706b0878-f008-11ea-b920-000c2927948f"},{"label":"旅游景区","value":"zrzhczt_ggfwss_lyjq","id":"706b0a4e-f008-11ea-b920-000c2927948f"},{"label":"星级饭店","value":"zrzhczt_ggfwss_xjfd","id":"706b0bb6-f008-11ea-b920-000c2927948f"},{"label":"体育场馆","value":"zrzhczt_ggfwss_tycg","id":"706b0d14-f008-11ea-b920-000c2927948f"},{"label":"宗教活动场所","value":"zrzhczt_ggfwss_zjhdcs","id":"706b0e68-f008-11ea-b920-000c2927948f"},{"label":"大型超市、百货店和亿元以上商品交易市场","value":"zrzhczt_ggfwss_spjysc","id":"706b0fc6-f008-11ea-b920-000c2927948f"},{"label":"基础指标统计表","value":"zrzhczt_ggfwss_jczbtjb","id":"706b1124-f008-11ea-b920-000c2927948f"},{"label":"政府灾害管理能力","value":"zhjzzy_zfzhjzzy_zfzhglnl","id":"706b1282-f008-11ea-b920-000c2927948f"},{"label":"综合性、政府专职和企业专职消防救援队伍与装备","value":"zhjzzy_zfzhjzzy_zhxzfzzhqyzzxfjydwyzb","id":"706b1412-f008-11ea-b920-000c2927948f"},{"label":"森林消防队伍与装备","value":"zhjzzy_zfzhjzzy_slxfdwyzb","id":"706b15ac-f008-11ea-b920-000c2927948f"},{"label":"航空护林站队伍与装备","value":"zhjzzy_zfzhjzzy_hkhlzdwyzb","id":"706b1714-f008-11ea-b920-000c2927948f"},{"label":"地震专业救援队伍与装备","value":"zhjzzy_zfzhjzzy_dzzyjydwyzb","id":"706b1872-f008-11ea-b920-000c2927948f"},{"label":"矿山/隧道行业救援队伍与装备","value":"zhjzzy_zfzhjzzy_kssdhyjydwyzb","id":"706b19d0-f008-11ea-b920-000c2927948f"},{"label":"危化/油气行业救援队伍与装备","value":"zhjzzy_zfzhjzzy_whyqhyjydwyzb","id":"706b1b2e-f008-11ea-b920-000c2927948f"},{"label":"海事救援队伍与装备","value":"zhjzzy_zfzhjzzy_hsjydwyzb","id":"706b1c82-f008-11ea-b920-000c2927948f"},{"label":"救灾物资储备库（点）","value":"zhjzzy_zfzhjzzy_jzwzcbkd","id":"706b1de0-f008-11ea-b920-000c2927948f"},{"label":"应急避难场所","value":"zhjzzy_zfzhjzzy_yjbncs","id":"706b1f48-f008-11ea-b920-000c2927948f"},{"label":"渔船避风港","value":"zhjzzy_zfzhjzzy_ycbfg","id":"706b211e-f008-11ea-b920-000c2927948f"},{"label":"救援装备资源企业","value":"zhjzzy_qyyshlljzzy_jyzbzy","id":"706b231c-f008-11ea-b920-000c2927948f"},{"label":"保险和再保险企业综合减灾资源（能力）","value":"zhjzzy_qyyshlljzzy_bxhzbxqyzhjzzynl","id":"706b2506-f008-11ea-b920-000c2927948f"},{"label":"社会应急力量综合减灾资源","value":"zhjzzy_qyyshlljzzy_shyjllzhjzzy","id":"706b26f0-f008-11ea-b920-000c2927948f"},{"label":"乡镇（街道）综合减灾资源（能力）","value":"zhjzzy_jczhjzzy_xzjdzhjzzynl","id":"706b2858-f008-11ea-b920-000c2927948f"},{"label":"社区（行政村）综合减灾资源（能力）","value":"zhjzzy_jczhjzzy_sqxzczhjzzynl","id":"706b29b6-f008-11ea-b920-000c2927948f"},{"label":"家庭减灾资源（能力）数据采集规范","value":"zhjzzy_jtjzzy_jtjzzynlsjcjgf","id":"706b2b14-f008-11ea-b920-000c2927948f"},{"label":"化工园区","value":"zdyh_zrzhcsaqscsgyhss_hgyq","id":"706b2d62-f008-11ea-b920-000c2927948f"},{"label":"危险化学品企业","value":"zdyh_zrzhcsaqscsgyhss_wxhxpqy","id":"706b2f4c-f008-11ea-b920-000c2927948f"},{"label":"地下矿山","value":"zdyh_zrzhcsfmkssgwxy_dxks","id":"706b312c-f008-11ea-b920-000c2927948f"},{"label":"排土场（废石场）","value":"zdyh_zrzhcsfmkssgwxy_ltks","id":"706b3316-f008-11ea-b920-000c2927948f"},{"label":"尾矿库","value":"zdyh_zrzhcsfmkssgwxy_wkk","id":"706b3500-f008-11ea-b920-000c2927948f"},{"label":"煤矿","value":"zdyh_zrzhcsmksgwxy_mk","id":"706b36e0-f008-11ea-b920-000c2927948f"},{"label":"年度自然灾害","value":"lszh_lszh_ndzrzh","id":"706b387a-f008-11ea-b920-000c2927948f"},{"label":"历史重大灾害事件","value":"lszh_lszh_lszdzhsj","id":"706b39e2-f008-11ea-b920-000c2927948f"},{"label":"历史一般自然灾害事件","value":"lszh_lszh_lsybzrzhsj","id":"706b3b86-f008-11ea-b920-000c2927948f"}];
    
-          
+      if (window.localStorage.getItem('uploadPz')) {
+          let uploadPz= JSON.parse(window.localStorage.getItem('uploadPz'));
+          this.uploadAction2=uploadPz.uploadAction2;
+      } 
         
       
     },
@@ -460,4 +517,17 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.upload_single{
+  margin-top:20px;
+  width:50%;
+  float:left;
+}
+.upload_multi{
+   margin-top:20px;
+   width:50%;
+   float:left;
+}
+.upload-demo{
+  margin:10px 10px;
+}
 </style>
